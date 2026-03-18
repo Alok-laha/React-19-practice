@@ -7,6 +7,7 @@ type UserProps = {
 };
 
 const UserComponent: React.FC<UserProps> = ({ data, onClick }) => {
+    console.log(`Rendering user: ${data.name}`);
     return (
         <div onClick={() => onClick(data)}>
             <h2>User Profile</h2>

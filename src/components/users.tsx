@@ -5,6 +5,7 @@ import { fetchUsers } from "../features/users/index.ts";
 import User from "./user.tsx";
 import type {User as UserType} from '../types/user.types.ts';
 import { useState, useCallback } from "react";
+import { userActions } from "../features/users/index.ts";
 
 
 const Users = () => {
@@ -16,9 +17,11 @@ const Users = () => {
     dispatch(fetchUsers());
   }, []);
 
+  // useCallback to memoize the click handler and prevent unnecessary re-renders of User components
   const clickHandler = useCallback((user: UserType) => {    
     alert(`User: ${user.name}, Email: ${user.email}`);
-  }, []);
+    dispatch(userActions.updateName({id: user.id, name: user.name}));
+  }, [dispatch]);
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);

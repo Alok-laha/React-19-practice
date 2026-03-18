@@ -23,7 +23,13 @@ const initialState: {
 const userSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {},
+    reducers: {
+        updateName: (state, action) => {
+            const { id, name } = action.payload;
+            const user = state.users.find(user => user.id === id);
+            if(user) user.name = name+'updated';
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchUsers.pending, (state)=>{
             state.error='';
@@ -46,4 +52,5 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+export const userActions = userSlice.actions;
 export {fetchUsers};
