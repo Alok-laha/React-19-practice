@@ -2,27 +2,49 @@ import { useDispatch, useSelector } from "react-redux";
 import type {RootState} from '../types/store.types';
 import { useEffect, useMemo } from "react";
 import { fetchUsers } from "../features/users/index.ts";
-import User from "./user.tsx";
-import type {User as UserType} from '../types/user.types.ts';
-import { useState, useCallback } from "react";
-import { userActions } from "../features/users/index.ts";
+// import type {User as UserType} from '../types/user.types.ts';
+import { useState } from "react";
+// import { userActions } from "../features/users/index.ts";
+import Table from "./table/Table.tsx";
 
+const userColumns = [
+  {name: 'id', title: 'ID'},
+  {name: 'name', title: 'Name'},
+  {name: 'username', title: 'Username'},
+  {name: 'email', title: 'Email'},
+  {name: 'address.street', title: 'Street'},
+  {name: 'address.city', title: 'City'},
+  {name: 'address.zipcode', title: 'Zipcode'},
+  {name: 'address.geo.lat', title: 'Latitutde'},
+  {name: 'address.geo.lng', title: 'Longitude'},
+  {name: 'phone', title: 'Phone'},
+  {name: 'website', title: 'Website'},
+  {name: 'company.name', title: 'Company Name'}
+]
 
 const Users = () => {
   const users = useSelector((state: RootState) => state.users);
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
   const [sortAsc, setSortAsc] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const totalPages = Math.ceil(users.users.length / limit);
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, []);
+  }, [dispatch]);
 
   // useCallback to memoize the click handler and prevent unnecessary re-renders of User components
-  const clickHandler = useCallback((user: UserType) => {    
-    alert(`User: ${user.name}, Email: ${user.email}`);
-    dispatch(userActions.updateName({id: user.id, name: user.name}));
-  }, [dispatch]);
+  // const clickHandler = useCallback((user: UserType) => {    
+  //   alert(`User: ${user.name}, Email: ${user.email}`);
+  //   dispatch(userActions.updateName({id: user.id, name: user.name}));
+  // }, [dispatch]);
+
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * limit;
+    return users.users.slice(startIndex, startIndex + limit);
+  }, [users.users, currentPage, limit]);
 
   const handleClear = () => {
     setSearch('');
@@ -36,8 +58,8 @@ const Users = () => {
   // This will return a memoized value
   const searchedUsers = useMemo(() => {
     console.log('Filtering users...');
-    return users.users.filter(user=> user.name.toLowerCase().includes(search.toLowerCase()));
-  }, [search, users.users]);
+    return paginatedUsers.filter(user=> user.name.toLowerCase().includes(search.toLowerCase()));
+  }, [search, paginatedUsers]);
 
   const handleSort = () => {
     setSortAsc(prev => !prev);
@@ -62,14 +84,9 @@ const Users = () => {
       <button onClick={handleSort}>Sort</button>
       {users.loading && <p>Loading...</p>}
       {users.error && <p>{users.error}</p>}
-      {users.users.length === 0 ? <p>No users found</p> : 
-      <ul>
-        {
-            sortedUsers.map(user => {
-               return <User key={user.id} data={user} onClick={clickHandler}/>
-            })
-        }
-      </ul>}
+      {users.users.length === 0 ? <p>No users found</p> :
+      <Table rows={sortedUsers} columns={userColumns} pagination={{currentPage, totalPages, limit, setPageNumber: setCurrentPage, setLimit: setLimit}}/>
+      }
     </div>
   );
 };

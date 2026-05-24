@@ -4,3 +4,7 @@
 @tailwind utilities;
 
 /* Custom global styles can go here */
+* {
+    margin: auto;
+    top: 0;
+}

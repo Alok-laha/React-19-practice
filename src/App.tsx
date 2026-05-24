@@ -1,55 +1,57 @@
 import './App.css'
-import { useForm } from 'react-hook-form';
-import { DevTool } from '@hookform/devtools';
-import Cake from './components/cake';
-import IceCream from './components/icecream';
+// import Wrap from './components/Wrapper/Wrap'
+// import { useForm } from 'react-hook-form';
+// import { DevTool } from '@hookform/devtools';
+// import Cake from './components/cake';
+// import IceCream from './components/icecream';
 import Users from './components/users';
-import MultiStepFormParent from './components/multiStepForm/MultiStepFormParent';
+import Posts from './components/post/Post';
+// import MultiStepFormParent from './components/multiStepForm/MultiStepFormParent';
 
-type FormData = {
-  name: string;
-  email: string;
-  address: {
-    street: string;
-    city: string;
-    zipcode: string;
-  };
-  geo: string[];
-};
+// type FormData = {
+//   name: string;
+//   email: string;
+//   address: {
+//     street: string;
+//     city: string;
+//     zipcode: string;
+//   };
+//   geo: string[];
+// };
 
 function App() {
-  const { register, handleSubmit, formState: { errors }, reset, control } = useForm<FormData>({
-    defaultValues: async () => {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
-      const data = await response.json();
-      return {
-        name: data.name,
-        email: data.email,
-        address: {
-          street: data.address.street,
-          city: data.address.city,
-          zipcode: data.address.zipcode,
-        },
-        geo: [data.address.geo.lat, data.address.geo.lng],
-      };
-    }
-  });
-  const onSubmit = (data: FormData) => { 
-    console.log(data);
-    reset({
-      name: '',
-      email: '',
-      address: {
-        street: '',
-        city: '',
-        zipcode: '',
-      },
-      geo: ['', ''],
-    });
-  };
+  // const { register, handleSubmit, formState: { errors }, reset, control } = useForm<FormData>({
+  //   defaultValues: async () => {
+  //     const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+  //     const data = await response.json();
+  //     return {
+  //       name: data.name,
+  //       email: data.email,
+  //       address: {
+  //         street: data.address.street,
+  //         city: data.address.city,
+  //         zipcode: data.address.zipcode,
+  //       },
+  //       geo: [data.address.geo.lat, data.address.geo.lng],
+  //     };
+  //   }
+  // });
+  // const onSubmit = (data: FormData) => { 
+  //   console.log(data);
+  //   reset({
+  //     name: '',
+  //     email: '',
+  //     address: {
+  //       street: '',
+  //       city: '',
+  //       zipcode: '',
+  //     },
+  //     geo: ['', ''],
+  //   });
+  // };
   return (
     <>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {/* <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="name">Name:</label>
           <input id="name" {...register('name', { required: {
             value: true,
@@ -112,13 +114,16 @@ function App() {
           {errors.geo?.[1] && <p style={{color: 'red'}}>{errors.geo[1].message}</p>}
 
           <button type="submit">Submit</button>
-        </form>
-        <hr />
-        <Cake />
-        <IceCream />
+        </form> */}
+
+        {/* <Cake /> */}
+        {/* <IceCream />
+        <MultiStepFormParent /> */}
         <Users />
-        <MultiStepFormParent />
-        <DevTool control={control} />
+        <Posts />
+        {/* <DevTool control={control} /> */}
+        {/* <Wrap page='user'/> */}
+        {/* <Table rows={rows} columns={columns}/> */}
     </>
   )
 }
